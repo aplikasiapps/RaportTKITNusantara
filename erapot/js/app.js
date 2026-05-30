@@ -103,3 +103,75 @@ window.onload = () => {
         renderInterface();
     }
 };
+// ==========================================
+// FITUR DASHBOARD GURU
+// ==========================================
+
+async function loadGuruDashboard() {
+    // Tampilkan bagian guru, sembunyikan stats admin
+    document.getElementById('dashboard-stats').classList.add('d-none');
+    document.getElementById('guru-dashboard').classList.remove('d-none');
+    
+    const tbody = document.getElementById('tabel-murid');
+    tbody.innerHTML = '<tr><td colspan="5" class="text-center py-4"><i class="fas fa-spinner fa-spin text-emerald fa-2x"></i><br>Memuat data murid...</td></tr>';
+
+    try {
+        const payload = { action: 'getDaftarMurid' };
+        const response = await fetch(API_URL, {
+            method: 'POST',
+            body: JSON.stringify(payload)
+        });
+        
+        const result = await response.json();
+        
+        if (result.status === 'success') {
+            const data = result.data;
+            if(data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted py-4">Belum ada data murid di database.</td></tr>';
+                return;
+            }
+
+            let barisHTML = '';
+            data.forEach((murid, index) => {
+                barisHTML += `
+                    <tr>
+                        <td class="fw-bold">${index + 1}</td>
+                        <td class="fw-bold text-emerald">${murid.nama}</td>
+                        <td>${murid.nisn}</td>
+                        <td><span class="badge bg-warning text-dark">Belum Diisi</span></td>
+                        <td>
+                            <button class="btn btn-sm btn-gold fw-bold" onclick="bukaFormRapor('${murid.id_murid}', '${murid.nama}')">
+                                <i class="fa-solid fa-pen-to-square"></i> Isi Rapor
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+            tbody.innerHTML = barisHTML;
+        }
+    } catch (error) {
+        tbody.innerHTML = `<tr><td colspan="5" class="text-center text-danger py-4">Gagal memuat data: ${error.message}</td></tr>`;
+    }
+}
+
+function bukaFormRapor(idMurid, namaMurid) {
+    // Setel nama murid di judul form
+    document.getElementById('namaMuridModal').innerText = `Input Rapor: ${namaMurid}`;
+    document.getElementById('id_murid_input').value = idMurid;
+    
+    // Tampilkan Modal Bootstrap
+    const modalRapor = new bootstrap.Modal(document.getElementById('modalInputRapor'));
+    modalRapor.show();
+}
+
+// Modifikasi fungsi renderInterface agar membaca role Guru
+// Cari fungsi renderInterface() di atas, dan ubah bagian "if (user.role === 'Admin')" menjadi seperti ini:
+/*
+    if (user.role === 'Admin') {
+        loadAdminStats();
+    } else if (user.role === 'Guru') {
+        loadGuruDashboard();
+    } else {
+        // ... dst
+    }
+*/
