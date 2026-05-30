@@ -1,5 +1,5 @@
 // PENTING: GANTI URL INI DENGAN URL WEB APP DARI APPS SCRIPT ANDA!
-const API_URL = "https://script.google.com/macros/s/AKfycbz_qsvaUfrLsAkFWEFal_7vdtU5gCRuFGAlhRO9dx5e2PmOtKQN1BWJKxAFErW2taQP/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbyE2NvllqGS7CrsJYiBHinjZqqJrReXgiQuZygtUMXR_CCEF8oMggojizAweo8ebZyQ/exec";
 
 document.getElementById('loginForm').addEventListener('submit', async (e) => {
     e.preventDefault();
