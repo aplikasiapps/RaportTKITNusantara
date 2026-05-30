@@ -1,4 +1,4 @@
-const API_URL = "https://script.google.com/macros/s/AKfycbzZrKnj_9XlItZ3sisBik0r6ykhlr9BhSbJi0W0vGFHnZZql1xyeSHnYK6cH9qW-DEt/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbz4juLxFjGYUwI9nzVmKZ6nXA1xaCNcZOzIyehyzbO5wHD99DsaKHjkhpyvyQDRQEJR/exec";
 
 document.getElementById('loginForm').addEventListener('submit', async (e) => {
     e.preventDefault();
