@@ -44,10 +44,13 @@ function renderInterface() {
     const user = JSON.parse(session);
     document.getElementById('login-section').classList.add('d-none');
     document.getElementById('app-section').classList.remove('d-none');
-    document.getElementById('welcome-msg').innerText = `Selamat Datang, ${user.nama}`;
+    document.getElementById('welcome-msg').innerText = `Selamat Datang, ${user.nama} (${user.role})`;
     
+    // INI BAGIAN YANG DITAMBAHKAN UNTUK GURU
     if (user.role === 'Admin') {
         loadAdminStats();
+    } else if (user.role === 'Guru') {
+        loadGuruDashboard();
     } else {
         document.getElementById('dashboard-stats').innerHTML = `
             <div class="col-12"><div class="alert alert-info">Dashboard fitur ${user.role} siap dikembangkan.</div></div>`;
