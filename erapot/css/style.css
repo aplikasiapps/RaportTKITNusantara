@@ -1,1 +1,38 @@
+:root {
+    --emerald: #047857;
+    --emerald-light: #10b981;
+    --gold: #f59e0b;
+    --gold-hover: #d97706;
+}
 
+body {
+    background-color: #f3f4f6;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+
+.bg-emerald {
+    background-color: var(--emerald) !important;
+}
+
+.text-emerald {
+    color: var(--emerald) !important;
+}
+
+.btn-gold {
+    background-color: var(--gold);
+    color: #ffffff;
+    border: none;
+    transition: all 0.3s ease;
+}
+
+.btn-gold:hover {
+    background-color: var(--gold-hover);
+    color: #ffffff;
+}
+
+.stat-card {
+    border: none;
+    border-radius: 12px;
+    border-left: 6px solid var(--emerald-light);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
