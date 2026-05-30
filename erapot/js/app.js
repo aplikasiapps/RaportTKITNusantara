@@ -3,11 +3,6 @@ const API_URL = "https://script.google.com/macros/s/AKfycbyMnnuGmunFQLjTi6hBeD_z
 
 document.getElementById('loginForm').addEventListener('submit', async (e) => {
     e.preventDefault();
-    const btn = e.target.querySelector('button');
-    const oldText = btn.innerHTML;
-    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memvalidasi...';
-    btn.disabled = true;
-    
     const payload = {
         action: 'login',
         username: document.getElementById('username').value,
@@ -19,16 +14,26 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
             method: 'POST',
             body: JSON.stringify(payload)
         });
-        const result = await response.json();
-
-        if (result.status === 'success') {
-            localStorage.setItem('user_session', JSON.stringify(result.user));
-            renderInterface();
-        } else {
-            alert(result.message);
+        
+        // Membaca respon asli dari Google
+        const textResult = await response.text(); 
+        
+        try {
+            const result = JSON.parse(textResult);
+            if (result.status === 'success') {
+                localStorage.setItem('user_session', JSON.stringify(result.user));
+                renderInterface();
+            } else {
+                alert("Pesan dari Server: " + result.message);
+            }
+        } catch (parseError) {
+            // Jika Google membalas dengan halaman HTML (bukan data), tampilkan ini
+            alert("Error: Google tidak mengembalikan data. Respon Google: " + textResult.substring(0, 100) + "...");
         }
+
     } catch (err) {
-        alert('Gagal terhubung ke server backend. Pastikan API URL sudah benar.');
+        // Jika koneksi benar-benar terputus atau diblokir
+        alert('Koneksi Terblokir! Detail Error: ' + err.message);
     } finally {
         btn.innerHTML = oldText;
         btn.disabled = false;
