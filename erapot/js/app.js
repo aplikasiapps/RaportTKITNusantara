@@ -1,8 +1,15 @@
-// PENTING: GANTI URL INI DENGAN URL WEB APP DARI APPS SCRIPT ANDA!
-const API_URL = "https://script.google.com/macros/s/AKfycbyMnnuGmunFQLjTi6hBeD_zcMZH8uLx2NJXxxnd4vheRz5xn-N3-THRfBKzZCBqKGcr/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbxGShEv4bosJRFX2NR1aezlkW55gqrddzPOMQ0S8KBPWHsK7m4S4K_n8_DmODPtvig/exec";
 
 document.getElementById('loginForm').addEventListener('submit', async (e) => {
     e.preventDefault();
+    
+    // Mendefinisikan tombol agar tidak error (btn is not defined)
+    const btn = e.target.querySelector('button');
+    const oldText = btn.innerHTML;
+    
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memvalidasi...';
+    btn.disabled = true;
+    
     const payload = {
         action: 'login',
         username: document.getElementById('username').value,
@@ -15,25 +22,16 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
             body: JSON.stringify(payload)
         });
         
-        // Membaca respon asli dari Google
-        const textResult = await response.text(); 
-        
-        try {
-            const result = JSON.parse(textResult);
-            if (result.status === 'success') {
-                localStorage.setItem('user_session', JSON.stringify(result.user));
-                renderInterface();
-            } else {
-                alert("Pesan dari Server: " + result.message);
-            }
-        } catch (parseError) {
-            // Jika Google membalas dengan halaman HTML (bukan data), tampilkan ini
-            alert("Error: Google tidak mengembalikan data. Respon Google: " + textResult.substring(0, 100) + "...");
-        }
+        const result = await response.json();
 
+        if (result.status === 'success') {
+            localStorage.setItem('user_session', JSON.stringify(result.user));
+            renderInterface();
+        } else {
+            alert("Gagal Login: " + result.message);
+        }
     } catch (err) {
-        // Jika koneksi benar-benar terputus atau diblokir
-        alert('Koneksi Terblokir! Detail Error: ' + err.message);
+        alert('Terjadi kesalahan jaringan atau API belum terhubung. Detail: ' + err.message);
     } finally {
         btn.innerHTML = oldText;
         btn.disabled = false;
