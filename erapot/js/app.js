@@ -1,9 +1,8 @@
-const API_URL = "https://script.google.com/macros/s/AKfycbxGShEv4bosJRFX2NR1aezlkW55gqrddzPOMQ0S8KBPWHsK7m4S4K_n8_DmODPtvig/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbzZrKnj_9XlItZ3sisBik0r6ykhlr9BhSbJi0W0vGFHnZZql1xyeSHnYK6cH9qW-DEt/exec";
 
 document.getElementById('loginForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     
-    // Mendefinisikan tombol agar tidak error (btn is not defined)
     const btn = e.target.querySelector('button');
     const oldText = btn.innerHTML;
     
@@ -31,7 +30,7 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
             alert("Gagal Login: " + result.message);
         }
     } catch (err) {
-        alert('Terjadi kesalahan jaringan atau API belum terhubung. Detail: ' + err.message);
+        alert('Gagal terhubung: ' + err.message);
     } finally {
         btn.innerHTML = oldText;
         btn.disabled = false;
@@ -45,19 +44,25 @@ function renderInterface() {
     const user = JSON.parse(session);
     document.getElementById('login-section').classList.add('d-none');
     document.getElementById('app-section').classList.remove('d-none');
-    document.getElementById('welcome-msg').innerText = `Selamat Datang, ${user.nama} (${user.role})`;
+    document.getElementById('welcome-msg').innerText = `Selamat Datang, ${user.nama}`;
     
     if (user.role === 'Admin') {
         loadAdminStats();
     } else {
         document.getElementById('dashboard-stats').innerHTML = `
-            <div class="col-12"><div class="alert alert-info">Dashboard fitur ${user.role} siap dikembangkan lebih lanjut.</div></div>`;
+            <div class="col-12"><div class="alert alert-info">Dashboard fitur ${user.role} siap dikembangkan.</div></div>`;
     }
 }
 
+// FUNGSI DASHBOARD YANG SUDAH DIPERBAIKI (MENGGUNAKAN POST)
 async function loadAdminStats() {
     try {
-        const response = await fetch(`${API_URL}?action=getDashboardAdmin`);
+        const payload = { action: 'getDashboardAdmin' };
+        const response = await fetch(API_URL, {
+            method: 'POST', // Diubah menjadi POST agar tidak diblokir
+            body: JSON.stringify(payload)
+        });
+        
         const result = await response.json();
         
         if (result.status === 'success') {
